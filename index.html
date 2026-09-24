@@ -57,6 +57,20 @@
         .animate-toast {
             animation: toastIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+
+        /* Hide scrollbar tapi tetap bisa scroll (nav tab) */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Min width tabel biar di mobile bisa scroll horizontal dengan nyaman */
+        .mobile-table { min-width: 480px; }
+        .mobile-table-wide { min-width: 560px; }
+
+        /* Touch target lebih gede buat tombol kecil */
+        @media (max-width: 640px) {
+            .touch-target { min-height: 40px; }
+            input[type="date"], input[type="month"] { min-height: 38px; }
+        }
     </style>
 </head>
 <body class="bg-dark-900 text-slate-200 min-h-screen p-3 sm:p-5 md:p-8 antialiased selection:bg-indigo-500/30 relative">
@@ -179,31 +193,35 @@
             </div>
 
             <!-- Header Action Controls -->
-            <div class="flex flex-wrap items-center justify-between sm:justify-end gap-2.5 sm:gap-3 pt-2 md:pt-0 border-t md:border-t-0 border-slate-800">
-                <div class="flex items-center gap-2 bg-dark-900 px-3 py-2 rounded-lg border border-slate-800">
-                    <span class="text-xs text-slate-400 font-medium">Gaji/Bulan:</span>
-                    <div class="flex items-center gap-1">
-                        <span class="text-emerald-400 font-semibold text-xs sm:text-sm">Rp</span>
-                        <input type="text" id="incomeInput" value="0" placeholder="0" class="bg-transparent font-bold text-xs sm:text-sm text-emerald-400 w-24 sm:w-28 focus:outline-none text-right sm:text-left disabled:opacity-50" oninput="formatInputCurrency(this); updateCalculations()">
+            <div class="flex flex-col gap-2.5 pt-2 md:pt-0 border-t md:border-t-0 border-slate-800 w-full md:w-auto">
+                <!-- Baris 1: Input Gaji & Target -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <div class="flex items-center gap-2 bg-dark-900 px-3 py-2 rounded-lg border border-slate-800 flex-1 min-w-0">
+                        <span class="text-xs text-slate-400 font-medium shrink-0">Gaji/Bln:</span>
+                        <div class="flex items-center gap-1 min-w-0 flex-1">
+                            <span class="text-emerald-400 font-semibold text-xs shrink-0">Rp</span>
+                            <input type="text" id="incomeInput" value="0" placeholder="0" class="bg-transparent font-bold text-xs text-emerald-400 w-full focus:outline-none disabled:opacity-50" oninput="formatInputCurrency(this); updateCalculations()">
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 bg-dark-900 px-3 py-2 rounded-lg border border-slate-800 shrink-0">
+                        <span class="text-xs text-slate-400 font-medium whitespace-nowrap">Target:</span>
+                        <div class="flex items-center gap-1">
+                            <input type="number" id="targetYearsInput" value="0" min="0" max="30" placeholder="0" class="bg-transparent font-bold text-xs text-indigo-400 w-8 text-center focus:outline-none disabled:opacity-50" oninput="updateCalculations()">
+                            <span class="text-xs text-slate-400">Thn</span>
+                        </div>
                     </div>
                 </div>
-                <div class="flex items-center gap-2 bg-dark-900 px-3 py-2 rounded-lg border border-slate-800">
-                    <span class="text-xs text-slate-400 font-medium">Target Nabung:</span>
-                    <div class="flex items-center gap-1">
-                        <input type="number" id="targetYearsInput" value="0" min="0" max="30" placeholder="0" class="bg-transparent font-bold text-xs sm:text-sm text-indigo-400 w-8 text-center focus:outline-none disabled:opacity-50" oninput="updateCalculations()">
-                        <span class="text-xs text-slate-400">Thn</span>
-                    </div>
+                <!-- Baris 2: Tombol Aksi -->
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleManualModal(true)" class="flex-1 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 text-xs font-medium px-3 py-2 rounded-lg transition-all flex items-center justify-center gap-1.5 active:scale-95 touch-target" title="Buka Panduan">
+                        <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+                        <span>Panduan</span>
+                    </button>
+                    <button onclick="resetToDefault()" class="flex-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-medium px-3 py-2 rounded-lg transition-all flex items-center justify-center gap-1.5 active:scale-95 touch-target" title="Reset Ulang Dari Nol">
+                        <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                        <span>Reset Semua</span>
+                    </button>
                 </div>
-
-                <!-- Tombol Manual Book & Reset -->
-                <button onclick="toggleManualModal(true)" class="bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 text-xs font-medium px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 active:scale-95" title="Buka Panduan">
-                    <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
-                    <span>Panduan</span>
-                </button>
-                <button onclick="resetToDefault()" class="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 text-xs font-medium px-3 py-2 rounded-lg transition-all flex items-center gap-1.5 active:scale-95" title="Reset Ulang Dari Nol">
-                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-                    <span>Reset Semua</span>
-                </button>
             </div>
         </header>
 
@@ -352,24 +370,23 @@
                     </div>
 
                     <!-- Filter Bulan & Print -->
-                    <div class="flex items-center gap-2 flex-wrap">
-                        <span class="text-xs text-slate-400 font-medium">Bulan:</span>
-                        <input type="month" id="varianceMonthFilter" onclick="this.showPicker()" onchange="renderVarianceTable()" class="bg-dark-900 border border-slate-800 text-xs text-indigo-400 font-semibold rounded-lg p-2 focus:outline-none cursor-pointer">
-                        <button onclick="printVariancePDF()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-3 py-2 rounded-lg flex items-center gap-1.5 transition-all active:scale-95">
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <input type="month" id="varianceMonthFilter" onclick="this.showPicker()" onchange="renderVarianceTable()" class="bg-dark-900 border border-slate-800 text-xs text-indigo-400 font-semibold rounded-lg p-2 focus:outline-none cursor-pointer flex-1 sm:flex-initial touch-target">
+                        <button onclick="printVariancePDF()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-3 py-2 rounded-lg flex items-center gap-1.5 transition-all active:scale-95 shrink-0 touch-target">
                             <i data-lucide="printer" class="w-3.5 h-3.5"></i> Print PDF
                         </button>
                     </div>
                 </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs text-slate-300">
+                <div class="overflow-x-auto -mx-1 px-1">
+                    <table class="w-full text-left text-xs text-slate-300 mobile-table-wide">
                         <thead class="bg-dark-900 text-slate-400 font-semibold border-b border-slate-800">
                             <tr>
-                                <th class="p-3">Pos Pengeluaran</th>
-                                <th class="p-3">Rencana Bulanan</th>
-                                <th class="p-3">Pengeluaran Bulan Ini</th>
-                                <th class="p-3">Sisa Anggaran Pos</th>
-                                <th class="p-3 text-center">Status</th>
+                                <th class="p-3 whitespace-nowrap">Pos Pengeluaran</th>
+                                <th class="p-3 whitespace-nowrap">Rencana</th>
+                                <th class="p-3 whitespace-nowrap">Realisasi</th>
+                                <th class="p-3 whitespace-nowrap">Sisa</th>
+                                <th class="p-3 text-center whitespace-nowrap">Status</th>
                             </tr>
                         </thead>
                         <tbody id="varianceTableBody" class="divide-y divide-slate-800/60"></tbody>
@@ -389,23 +406,23 @@
                         <span id="totalExpensesCount" class="text-xs bg-dark-900 px-2.5 py-1 rounded-full text-slate-400 border border-slate-800">0 Transaksi</span>
                     </div>
                     <!-- Print PDF Riwayat -->
-                    <div class="flex items-center gap-2">
-                        <input type="month" id="historyPrintMonth" class="bg-dark-900 border border-slate-800 text-xs text-indigo-400 font-semibold rounded-lg p-2 focus:outline-none cursor-pointer" onclick="this.showPicker()">
-                        <button onclick="printHistoryPDF()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-3 py-2 rounded-lg flex items-center gap-1.5 transition-all active:scale-95">
+                    <div class="flex items-center gap-2 w-full sm:w-auto">
+                        <input type="month" id="historyPrintMonth" class="bg-dark-900 border border-slate-800 text-xs text-indigo-400 font-semibold rounded-lg p-2 focus:outline-none cursor-pointer flex-1 sm:flex-initial touch-target" onclick="this.showPicker()">
+                        <button onclick="printHistoryPDF()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-3 py-2 rounded-lg flex items-center gap-1.5 transition-all active:scale-95 shrink-0 touch-target">
                             <i data-lucide="printer" class="w-3.5 h-3.5"></i> Print PDF
                         </button>
                     </div>
                 </div>
 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left text-xs text-slate-300">
+                <div class="overflow-x-auto -mx-1 px-1">
+                    <table class="w-full text-left text-xs text-slate-300 mobile-table-wide">
                         <thead class="bg-dark-900 text-slate-400 font-semibold border-b border-slate-800">
                             <tr>
-                                <th class="p-3">Tanggal</th>
-                                <th class="p-3">Keterangan</th>
-                                <th class="p-3">Pos Pengeluaran</th>
-                                <th class="p-3">Nominal</th>
-                                <th class="p-3 text-center">Aksi</th>
+                                <th class="p-3 whitespace-nowrap">Tanggal</th>
+                                <th class="p-3 whitespace-nowrap">Keterangan</th>
+                                <th class="p-3 whitespace-nowrap">Pos</th>
+                                <th class="p-3 whitespace-nowrap">Nominal</th>
+                                <th class="p-3 text-center whitespace-nowrap">Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="historyTableBody" class="divide-y divide-slate-800/60"></tbody>
